@@ -6,11 +6,6 @@ on:
       - '[0-9]*'
       - '!*.*.*.*.*'
   workflow_dispatch:
-    inputs:
-      create_mr:
-        description: 'Open F-Droid merge request after syncing the branch'
-        type: boolean
-        default: true
 
 concurrency:
   group: release-${{ github.ref }}
@@ -53,8 +48,8 @@ jobs:
           task: ${{ matrix.task }}
           abi: ${{ matrix.abi }}
           build-type: release
-          artifact-version: ${{ github.ref_name }}
-          build-tag: ${{ github.ref_name }}
+          artifact-version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.0.0' }}
+          build-tag: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.0.0' }}
           app-id: ${{ secrets.APP_ID }}
           app-hash: ${{ secrets.APP_HASH }}
           release-keystore-b64: ${{ secrets.RELEASE_KEYSTORE }}
@@ -85,19 +80,26 @@ jobs:
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
         run: |
           set -euo pipefail
+          CURRENT_TAG="${{ github.ref_type == 'tag' && github.ref_name || '' }}"
+          if [ -z "$CURRENT_TAG" ]; then
+            echo "Not a tag push — skipping changelog generation"
+            echo "No changelog for manual builds." > "$RUNNER_TEMP/changelog.md"
+            exit 0
+          fi
+
           PREV_TAG=$(git tag -l '[0-9]*' --sort=-version:refname \
             | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' \
-            | grep -A1 "^${GITHUB_REF_NAME}$" | tail -1) || true
-          echo "Current tag: ${GITHUB_REF_NAME}"
+            | grep -A1 "^${CURRENT_TAG}$" | tail -1) || true
+          echo "Current tag: ${CURRENT_TAG}"
 
-          if [ "$PREV_TAG" = "$GITHUB_REF_NAME" ] || [ -z "$PREV_TAG" ]; then
+          if [ "$PREV_TAG" = "$CURRENT_TAG" ] || [ -z "$PREV_TAG" ]; then
             echo "Previous stable tag: none — diffing against current tag only"
             PREV_TAG=""
           else
-            echo "Previous stable tag: ${PREV_TAG} — diffing ${PREV_TAG}..${GITHUB_REF_NAME}"
+            echo "Previous stable tag: ${PREV_TAG} — diffing ${PREV_TAG}..${CURRENT_TAG}"
           fi
 
-          bash .github/scripts/changelog-ai.sh "$PREV_TAG" "$GITHUB_REF_NAME" "$RUNNER_TEMP/changelog.md"
+          bash .github/scripts/changelog-ai.sh "$PREV_TAG" "$CURRENT_TAG" "$RUNNER_TEMP/changelog.md"
 
       - name: Upload changelog artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
