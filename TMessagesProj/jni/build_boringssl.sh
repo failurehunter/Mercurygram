@@ -9,7 +9,7 @@ function build_one {
 	# invalidates stale archives on existing local checkouts (CI is clean).
 	[ -f "${CPU}/libssl.a" ] && [ -f "${CPU}/.ndk-${NDK_VERSION}" ] && return
 
-	mkdir ${CPU}
+	mkdir -p ${CPU}
 	cd ${CPU}
 
 	echo "Configuring ${CPU}..."
