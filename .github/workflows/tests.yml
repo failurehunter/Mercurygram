@@ -1,9 +1,7 @@
 name: Instrumentation tests
 
 on:
-  push:
-    branches: [Mercurygram]
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: tests-${{ github.ref }}

@@ -1,9 +1,7 @@
 name: Beta
 
 on:
-  push:
-    branches:
-      - Mercurygram
+  workflow_dispatch:
 
 concurrency:
   group: beta-${{ github.ref }}
