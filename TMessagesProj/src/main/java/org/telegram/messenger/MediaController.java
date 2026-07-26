@@ -5082,7 +5082,7 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                                 break;
                             }
                             if (!sourceFile.exists()) {
-                                sourceFile = FileLoader.getInstance(currentAccount.getCurrentAccount()).getPathToMessage(message.messageOwner, false);
+                                sourceFile = FileLoader.getInstance(currentAccount.getCurrentAccount()).getPathToMessage(message.messageOwner, true);
                                 FileLog.d("saving file: correcting path from " + path + " to " + (sourceFile == null ? null : sourceFile.getAbsolutePath()));
                             }
                             if (sourceFile != null && sourceFile.exists()) {
