@@ -1442,7 +1442,9 @@ public class EmojiView extends FrameLayout implements
             if (!imageViewEmoji.isRecent) {
                 String color = Emoji.emojiColor.get(code);
                 if (color == null && SharedConfig.mg_forceEmojiSkin > 0) {
-                    color = CompoundEmoji.skinTones.get(SharedConfig.mg_forceEmojiSkin - 1);
+                    if (CompoundEmoji.isCompound(code) || EmojiData.emojiColoredMap.contains(code)) {
+                        color = CompoundEmoji.skinTones.get(SharedConfig.mg_forceEmojiSkin - 1);
+                    }
                 }
                 if (color != null) {
                     code = addColorToCode(code, color);
@@ -7354,7 +7356,9 @@ public class EmojiView extends FrameLayout implements
                                 coloredCode = code = EmojiData.dataColored[a][position - count - 1];
                                 String color = Emoji.emojiColor.get(code);
                                 if (color == null && SharedConfig.mg_forceEmojiSkin > 0) {
-                                    color = CompoundEmoji.skinTones.get(SharedConfig.mg_forceEmojiSkin - 1);
+                                    if (CompoundEmoji.isCompound(code) || EmojiData.emojiColoredMap.contains(code)) {
+                                        color = CompoundEmoji.skinTones.get(SharedConfig.mg_forceEmojiSkin - 1);
+                                    }
                                 }
                                 if (color != null) {
                                     coloredCode = addColorToCode(coloredCode, color);
