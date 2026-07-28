@@ -117,6 +117,10 @@ public class EmojiColorPickerWindow extends PopupWindow {
         setHeight(getPopupHeight());
     }
 
+    public void setHandleTouches(boolean handle) {
+        pickerView.handleTouches = handle;
+    }
+
     public void updateColors() {
         pickerView.updateColors();
     }
@@ -136,6 +140,7 @@ public class EmojiColorPickerWindow extends PopupWindow {
         private int arrowX;
         private int[] selection = new int[] { 0, 0 };
         private int[] lastSelection = new int[] { 0, 0 };
+        public boolean handleTouches;
         private Paint rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         private RectF rect = new RectF();
         private AnimatedFloat selection1Animated = new AnimatedFloat(this, 125, CubicBezierInterpolator.EASE_OUT_QUINT);
@@ -237,6 +242,21 @@ public class EmojiColorPickerWindow extends PopupWindow {
                 return false;
             }
             if (!isCompound) {
+                if (handleTouches) {
+                    float x = event.getX();
+                    int index = Math.max(0, Math.min(5, (int)((x - dp(5)) / (emojiSize + dp(4)))));
+                    if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
+                        if (selection[0] != index) {
+                            selection[0] = index;
+                            invalidate();
+                            if (onSelectionUpdate != null) {
+                                onSelectionUpdate.run(selection[0], selection[1]);
+                            }
+                        }
+                        return true;
+                    }
+                    return super.onTouchEvent(event);
+                }
                 return super.onTouchEvent(event);
             }
 

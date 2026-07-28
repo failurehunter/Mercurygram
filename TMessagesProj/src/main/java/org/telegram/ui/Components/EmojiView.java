@@ -4365,23 +4365,21 @@ public class EmojiView extends FrameLayout implements
         }
     }
 
-    private void showSkinTonePicker() {
-        if (fragment == null || fragment.getParentActivity() == null) return;
-        String[] items = new String[6];
-        items[0] = LocaleController.getString(R.string.Default);
-        for (int i = 0; i < 5; i++) {
-            items[1 + i] = CompoundEmoji.skinTones.get(i);
-        }
-        int current = SharedConfig.mg_forceEmojiSkin;
-        AlertDialog dialog = new AlertDialog.Builder(fragment.getParentActivity())
-                .setTitle(emojiTitles[0])
-                .setItems(items, (di, which) -> {
-                    SharedConfig.setMgForceEmojiSkin(which);
-                    if (emojiAdapter != null) emojiAdapter.notifyDataSetChanged();
-                })
-                .setNegativeButton(LocaleController.getString(R.string.Cancel), null)
-                .create();
-        fragment.showDialog(dialog);
+    private void showSkinTonePicker(View anchor) {
+        if (anchor == null || anchor.getWindowToken() == null) return;
+        EmojiColorPickerWindow picker = EmojiColorPickerWindow.create(getContext(), resourcesProvider);
+        picker.setHandleTouches(true);
+        picker.setEmoji("\uD83D\uDC4B");
+        picker.setSelection(SharedConfig.mg_forceEmojiSkin);
+        picker.setOnSelectionUpdateListener((sel1, sel2) -> {
+            int tone = Math.max(0, Math.min(5, sel1));
+            if (tone != SharedConfig.mg_forceEmojiSkin) {
+                SharedConfig.setMgForceEmojiSkin(tone);
+                if (emojiAdapter != null) emojiAdapter.notifyDataSetChanged();
+            }
+            picker.dismiss();
+        });
+        picker.showAsDropDown(anchor, -dp(10), -anchor.getHeight() - picker.getPopupHeight() + dp(10));
     }
 
     private void openTrendingStickers(TLRPC.StickerSetCovered set) {
@@ -7421,7 +7419,7 @@ public class EmojiView extends FrameLayout implements
                     } else {
                         cell.setText(emojiTitles[index], 0);
                         if (index == 0) {
-                            cell.setSkinToneIcon(SharedConfig.mg_forceEmojiSkin, v -> showSkinTonePicker());
+                            cell.setSkinToneIcon(SharedConfig.mg_forceEmojiSkin, v -> showSkinTonePicker(v));
                         }
                     }
                     break;

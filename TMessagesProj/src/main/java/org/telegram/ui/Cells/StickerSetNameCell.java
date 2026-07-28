@@ -222,17 +222,22 @@ public class StickerSetNameCell extends FrameLayout {
     }
 
     public void setSkinToneIcon(int skinIndex, OnClickListener listener) {
-        int color;
-        switch (skinIndex) {
-            case 1:  color = 0xFFD5A075; break;
-            case 2:  color = 0xFFDDB28B; break;
-            case 3:  color = 0xFFC68B5E; break;
-            case 4:  color = 0xFF8D5524; break;
-            case 5:  color = 0xFF4A2C1B; break;
-            default: color = 0xFFF5E6D3; break;
+        if (skinIndex > 0) {
+            int color;
+            switch (skinIndex) {
+                case 1:  color = 0xFFD5A075; break;
+                case 2:  color = 0xFFDDB28B; break;
+                case 3:  color = 0xFFC68B5E; break;
+                case 4:  color = 0xFF8D5524; break;
+                case 5:  color = 0xFF4A2C1B; break;
+                default: color = 0xFFF5E6D3; break;
+            }
+            buttonView.setColorFilter(null);
+            buttonView.setImageDrawable(Theme.createCircleDrawable(dp(16), color));
+        } else {
+            buttonView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_emojiPanelStickerSetNameIcon), PorterDuff.Mode.MULTIPLY));
+            buttonView.setImageResource(R.drawable.msg_palette);
         }
-        buttonView.setColorFilter(null);
-        buttonView.setImageDrawable(Theme.createCircleDrawable(dp(16), color));
         buttonView.setVisibility(VISIBLE);
         buttonView.setOnClickListener(listener);
     }
