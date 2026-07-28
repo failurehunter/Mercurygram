@@ -317,6 +317,14 @@ public class SharedConfig {
         Emoji.clearEmojiCache();
     }
 
+    public static void setMgForceEmojiSkin(int skin) {
+        mg_forceEmojiSkin = skin;
+        ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE)
+                .edit()
+                .putInt("mg_forceEmojiSkin", skin)
+                .apply();
+    }
+
     public static void setMgTranslateAltEngine(String engine) {
         engine = sanitizeMgTranslateAltEngine(engine);
         mg_translateAltEngine = engine;
@@ -689,6 +697,8 @@ public class SharedConfig {
     // the pack is missing. Global because the emoji bitmap cache (Emoji.emojiBmp)
     // is a process-wide static, same as useSystemFont/useSystemEmoji.
     public static boolean mg_useCustomEmojiPack = false;
+    // Mercurygram: 0 = off, 1-5 = force this skin tone (🏻🏼🏽🏾🏿)
+    public static int mg_forceEmojiSkin = 0;
 
     // Mercurygram: Privacy
     public static boolean reduceTrackingFingerprint = false;
@@ -1065,6 +1075,7 @@ public class SharedConfig {
             editor.remove("mg_dismissedPluginPromptTag");
         }
         editor.putString("mg_unifiedPushEndpointUrl", unifiedPushEndpointUrl);
+        editor.putInt("mg_forceEmojiSkin", mg_forceEmojiSkin);
     }
 
     private static void mgLoadConfig(SharedPreferences preferences) {
@@ -1095,6 +1106,7 @@ public class SharedConfig {
         mg_transcribeModel = preferences.getString("mg_transcribeModel", "tiny-q8_0");
         mg_transcribeVad = preferences.getBoolean("mg_transcribeVad", true);
         mg_useCustomEmojiPack = preferences.getBoolean("mg_useCustomEmojiPack", false);
+        mg_forceEmojiSkin = preferences.getInt("mg_forceEmojiSkin", 0);
         migratePerAccountSettingsV1(preferences);
         migrateTranscribeLangToPerAccount(preferences);
         migrateHideStoriesToPerAccount(preferences);

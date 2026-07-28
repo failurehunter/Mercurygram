@@ -13,6 +13,7 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -218,6 +219,22 @@ public class StickerSetNameCell extends FrameLayout {
 
     public void setOnIconClickListener(OnClickListener onIconClickListener) {
         buttonView.setOnClickListener(onIconClickListener);
+    }
+
+    public void setSkinToneIcon(int skinIndex, OnClickListener listener) {
+        int color;
+        switch (skinIndex) {
+            case 1:  color = 0xFFD5A075; break;
+            case 2:  color = 0xFFDDB28B; break;
+            case 3:  color = 0xFFC68B5E; break;
+            case 4:  color = 0xFF8D5524; break;
+            case 5:  color = 0xFF4A2C1B; break;
+            default: color = 0xFFF5E6D3; break;
+        }
+        buttonView.setColorFilter(null);
+        buttonView.setImageDrawable(Theme.createCircleDrawable(dp(16), color));
+        buttonView.setVisibility(VISIBLE);
+        buttonView.setOnClickListener(listener);
     }
 
     @Override
