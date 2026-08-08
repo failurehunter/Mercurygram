@@ -132,7 +132,7 @@ import org.telegram.ui.Components.blur3.drawable.BlurredBackgroundDrawableSource
 import org.telegram.ui.Components.blur3.drawable.color.impl.BlurredBackgroundProviderImpl;
 import org.telegram.ui.Components.blur3.source.BlurredBackgroundSource;
 import org.telegram.ui.Components.blur3.source.BlurredBackgroundSourceRenderNode;
-import org.telegram.ui.Components.blur3.utils.Blur3Utils;
+import org.telegram.ui.Components.blur3.ViewGroupPartRenderer;
 import org.telegram.ui.Components.chat.ViewPositionWatcher;
 import org.telegram.ui.Stories.recorder.HintView2;
 
@@ -520,7 +520,7 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public View createView(Context context) {
-        iBlur3Capture = (canvas, position) -> Blur3Utils.captureRelativeParent(listView, canvas, position, listView, contentView);
+        iBlur3Capture = new ViewGroupPartRenderer(listView, contentView, listView::drawChild);
 
         hasOwnBackground = true;
         strokeShader = new LinearGradient(0, 0, 0, dp(28), new int[] { 0x4dffffff, 0, 0x1affffff }, new float[] { 0, 0.5f, 1 }, Shader.TileMode.CLAMP);
