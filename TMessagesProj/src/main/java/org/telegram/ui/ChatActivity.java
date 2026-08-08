@@ -46884,6 +46884,9 @@ public class ChatActivity extends BaseFragment implements
         }
 
         //if (BitwiseUtils.hasFlag(flags, BLUR_INVALIDATE_FLAG_POSITIONS | BLUR_INVALIDATE_FLAG_SCROLL)) {
+        // ponytail: while the keyboard slides, reuse the last captured blur content instead of
+        // re-rendering the whole chat offscreen every frame; one final capture runs on animation end.
+        scrollableViewNoiseSuppressor.skipCapture = windowInsetsStateHolder.isAnimating();
         final boolean hasChanges = scrollableViewNoiseSuppressor.invalidateResultRenderNodes(contentView::drawList, contentView.getWidth(), contentView.getHeight());
         if (hasChanges) {
             if (glassBackgroundSourceRenderNode != null) {

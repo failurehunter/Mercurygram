@@ -294,6 +294,8 @@ public class DownscaleScrollableNoiseSuppressor {
      * */
     private final RenderNode[] resultRenderNodes;
 
+    public boolean skipCapture;
+
     long lastHash;
 
     private boolean invalidateResultRenderNodes(int width, int height) {
@@ -385,7 +387,9 @@ public class DownscaleScrollableNoiseSuppressor {
             c.save();
             c.translate(-position.left, -position.top);
 
-            capture.capture(c, tmpRectF);
+            if (!skipCapture) {
+                capture.capture(c, tmpRectF);
+            }
             c.restore();
             endRecordingRect();
 

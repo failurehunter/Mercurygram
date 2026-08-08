@@ -196,6 +196,10 @@ public class WindowInsetsStateHolder implements WindowInsetsProvider, WindowInse
         return keyboardVisibility.get();
     }
 
+    public boolean isAnimating() {
+        return insetsAnimator.isAnimating() || activeAnimations > 0;
+    }
+
 
 
     private static final int IN_APP_IME_STATE_VISIBLE = 0;
