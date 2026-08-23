@@ -2,7 +2,7 @@ name: Debug Build
 
 on:
   push:
-    branches: [Mercurygram]
+    branches: [Mercurygram, fix/save-to-downloads-race]
   workflow_dispatch:
 
 concurrency:
